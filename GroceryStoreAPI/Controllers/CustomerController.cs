@@ -1,11 +1,7 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+using GroceryStoreAPI.Dto;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using GroceryStoreAPI.Models;
 using GroceryStoreAPI.Services;
 
 namespace GroceryStoreAPI.Controllers
@@ -23,14 +19,14 @@ namespace GroceryStoreAPI.Controllers
 
         // GET: api/Customer
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Customer>>> GetCustomers()
+        public async Task<ActionResult<IEnumerable<CustomerDto>>> GetCustomers()
         {
             return await _service.GetCustomers();
         }
 
         // GET: api/Customer/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Customer>> GetCustomer(long id)
+        public async Task<ActionResult<CustomerDto>> GetCustomer(long id)
         {
             var customer = await _service.GetCustomer(id);
 
@@ -44,14 +40,14 @@ namespace GroceryStoreAPI.Controllers
 
         // PUT: api/Customer/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutCustomer(long id, Customer customer)
+        public async Task<IActionResult> PutCustomer(long id, CustomerDto customerDto)
         {
-            if (id != customer.Id)
+            if (id != customerDto.Id)
             {
                 return BadRequest();
             }
 
-            var result = await _service.UpdateCustomer(customer);
+            var result = await _service.UpdateCustomer(customerDto);
             if (result == null)
             {
                 return NotFound();
@@ -62,11 +58,11 @@ namespace GroceryStoreAPI.Controllers
 
         // POST: api/Customer
         [HttpPost]
-        public async Task<IActionResult> PostCustomer(Customer customer)
+        public async Task<IActionResult> PostCustomer(CustomerDto customerDto)
         {
-            customer = await _service.CreateCustomer(customer);
+            customerDto = await _service.CreateCustomer(customerDto);
 
-            return CreatedAtAction("GetCustomer", new { id = customer.Id }, customer);
+            return CreatedAtAction("GetCustomer", new { id = customerDto.Id }, customerDto);
         }
 
         // DELETE: api/Customer/5

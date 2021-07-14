@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using GroceryStoreAPI.Controllers;
+using GroceryStoreAPI.Dto;
 using GroceryStoreAPI.Models;
 using GroceryStoreAPI.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -14,18 +15,17 @@ namespace Tests.Controllers
     {
         private Mock<ICustomerService> _mockCustomerService;
 
-        private readonly List<Customer> _testCustomers = new List<Customer>()
+        private readonly List<CustomerDto> _testCustomers = new List<CustomerDto>()
         {
-            new Customer() {Name = "Test Customer 1"},
-            new Customer() {Name = "Test Customer 2"},
-            new Customer() {Name = "Test Customer 3"},
-            new Customer() {Name = "Test Customer 4"},
+            new CustomerDto() {Name = "Test Customer 1"},
+            new CustomerDto() {Name = "Test Customer 2"},
+            new CustomerDto() {Name = "Test Customer 3"},
+            new CustomerDto() {Name = "Test Customer 4"},
         };
 
         private CustomerController BuildCustomerController()
         {
             _mockCustomerService = new Mock<ICustomerService>();
-            
             
             return new CustomerController(_mockCustomerService.Object);
         }
@@ -47,7 +47,7 @@ namespace Tests.Controllers
         {
             var customerController = BuildCustomerController();
             _mockCustomerService.Setup(x => x.GetCustomer(99))
-                .Returns(Task.FromResult<Customer>(null));
+                .Returns(Task.FromResult<CustomerDto>(null));
             
             var response = await customerController.GetCustomer(99);
 
@@ -58,9 +58,9 @@ namespace Tests.Controllers
         public async Task GetCustomer_ReturnsCustomerIfFound()
         {
             var customerController = BuildCustomerController();
-            var sampleCustomer = new Customer() {Id = 1, Name = "Test Customer 1"};
+            var sampleCustomer = new CustomerDto() {Id = 1, Name = "Test Customer 1"};
             _mockCustomerService.Setup(x => x.GetCustomer(1))
-                .Returns(Task.FromResult<Customer>(sampleCustomer));
+                .Returns(Task.FromResult<CustomerDto>(sampleCustomer));
             
             var response = await customerController.GetCustomer(1);
             var customer = response.Value;
@@ -73,7 +73,7 @@ namespace Tests.Controllers
         public async Task PutCustomer_ReturnsBadRequestWhenParametersAreInvalid()
         {
             var customerController = BuildCustomerController();
-            var sampleCustomer = new Customer() {Id = 2, Name = "Test Customer 1"};
+            var sampleCustomer = new CustomerDto() {Id = 2, Name = "Test Customer 1"};
 
             var response = await customerController.PutCustomer(1, sampleCustomer);
             
@@ -84,9 +84,9 @@ namespace Tests.Controllers
         public async Task PutCustomer_Returns404IfNotFound()
         {
             var customerController = BuildCustomerController();
-            _mockCustomerService.Setup(x => x.UpdateCustomer(It.IsAny<Customer>()))
-                .Returns(Task.FromResult<Customer>(null));
-            var sampleCustomer = new Customer() {Id = 1, Name = "Test Customer 1"};
+            _mockCustomerService.Setup(x => x.UpdateCustomer(It.IsAny<CustomerDto>()))
+                .Returns(Task.FromResult<CustomerDto>(null));
+            var sampleCustomer = new CustomerDto() {Id = 1, Name = "Test Customer 1"};
 
             var response = await customerController.PutCustomer(1, sampleCustomer);
             
@@ -97,9 +97,9 @@ namespace Tests.Controllers
         public async Task CreateCustomer_ReturnsCreatedAtActionResultIfValid()
         {
             var customerController = BuildCustomerController();
-            var sampleCustomer = new Customer() {Id = 1, Name = "Test Customer 1"};
-            _mockCustomerService.Setup(x => x.CreateCustomer(It.IsAny<Customer>()))
-                .Returns(Task.FromResult<Customer>(sampleCustomer));
+            var sampleCustomer = new CustomerDto() {Id = 1, Name = "Test Customer 1"};
+            _mockCustomerService.Setup(x => x.CreateCustomer(It.IsAny<CustomerDto>()))
+                .Returns(Task.FromResult<CustomerDto>(sampleCustomer));
 
             var response = await customerController.PostCustomer(sampleCustomer);
             
@@ -111,7 +111,7 @@ namespace Tests.Controllers
         {
             var customerController = BuildCustomerController();
             _mockCustomerService.Setup(x => x.DeleteCustomer(It.IsAny<long>()))
-                .Returns(Task.FromResult<Customer>(null));
+                .Returns(Task.FromResult<CustomerDto>(null));
 
             var response = await customerController.DeleteCustomer(1);
             
