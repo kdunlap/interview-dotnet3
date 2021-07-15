@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using GroceryStoreAPI.Data.Repositories;
 using GroceryStoreAPI.Dto;
 using GroceryStoreAPI.Models;
@@ -11,17 +12,19 @@ namespace GroceryStoreAPI.Services
     public class CustomerService : ICustomerService
     {
         private readonly IRepository<Customer> _customerRepository;
+        private readonly IMapper _mapper;
 
-        public CustomerService(IRepository<Customer> customerRepository)
+        public CustomerService(IRepository<Customer> customerRepository, IMapper mapper)
         {
             _customerRepository = customerRepository;
+            _mapper = mapper;
         }
         
         public async Task<List<CustomerDto>> GetCustomers()
         {
             var customers = await _customerRepository.GetAll();
 
-            return customers.Select(CustomerToDto).ToList();
+            return customers.Select(c => _mapper.Map<CustomerDto>(c)).ToList();
         }
         
         public async Task<CustomerDto> GetCustomer(long id)
@@ -32,24 +35,24 @@ namespace GroceryStoreAPI.Services
                 return null;
             }
             
-            return CustomerToDto(customer);
+            return _mapper.Map<CustomerDto>(customer);
         }
         
         public async Task<CustomerDto> CreateCustomer(CustomerDto customerDto)
         {
-            var customer = await _customerRepository.Add(DtoToCustomer(customerDto));
-            return CustomerToDto(customer);
+            var customer = await _customerRepository.Add(_mapper.Map<Customer>(customerDto));
+            return _mapper.Map<CustomerDto>(customer);
         }
         
         public async Task<CustomerDto> UpdateCustomer(CustomerDto customerDto)
         {
-            var customer = await _customerRepository.Update(DtoToCustomer(customerDto));
+            var customer = await _customerRepository.Update(_mapper.Map<Customer>(customerDto));
             if (customer == null)
             {
                 return null;
             }
             
-            return CustomerToDto(customer);
+            return _mapper.Map<CustomerDto>(customer);
         }
         
         public async Task<CustomerDto> DeleteCustomer(long id)
@@ -60,23 +63,7 @@ namespace GroceryStoreAPI.Services
                 return null;
             }
             
-            return CustomerToDto(customer);
+            return _mapper.Map<CustomerDto>(customer);
         }
-        
-        
-        // todo - use automapper instead
-        private static Customer DtoToCustomer(CustomerDto customerDto) =>
-            new Customer
-            {
-                Id = customerDto.Id,
-                Name = customerDto.Name,
-            };
-        
-        private static CustomerDto CustomerToDto(Customer customer) =>
-            new CustomerDto
-            {
-                Id = customer.Id,
-                Name = customer.Name,
-            };
     }
 }

@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using AutoMapper;
+using GroceryStoreAPI.Data;
 using GroceryStoreAPI.Data.Repositories;
 using GroceryStoreAPI.Dto;
 using GroceryStoreAPI.Models;
@@ -12,16 +14,26 @@ namespace Tests.Services
     public class CustomerServiceTest
     {
         private readonly Mock<IRepository<Customer>> _mockRepository = new Mock<IRepository<Customer>>();
+        private readonly IMapper _mapper;
 
         private readonly List<Customer> _testCustomers = new List<Customer>()
         {
             new Customer() {Id = 1, Name = "Test Customer 1"},
             new Customer() {Id = 2, Name = "Test Customer 2"},
             new Customer() {Id = 3, Name = "Test Customer 3"}
-        }; 
+        };
+
+        public CustomerServiceTest()
+        {
+            // todo - should be able to do this once for all tests
+            var myProfile = new MappingProfile();
+            var configuration = new MapperConfiguration(cfg => cfg.AddProfile(myProfile));
+            _mapper = new Mapper(configuration);
+        }
+        
         private CustomerService BuildCustomerService()
         {
-            var service = new CustomerService(_mockRepository.Object);
+            var service = new CustomerService(_mockRepository.Object, _mapper);
             
             return service;
         }

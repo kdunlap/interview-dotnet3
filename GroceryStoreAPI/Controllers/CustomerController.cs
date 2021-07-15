@@ -6,6 +6,9 @@ using GroceryStoreAPI.Services;
 
 namespace GroceryStoreAPI.Controllers
 {
+    /// <summary>
+    /// Customer related actions
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class CustomerController : ControllerBase
@@ -17,6 +20,9 @@ namespace GroceryStoreAPI.Controllers
             _service = service;
         }
 
+        /// <summary>
+        /// Gets a list of customers.
+        /// </summary>
         // GET: api/Customer
         [HttpGet]
         public async Task<ActionResult<IEnumerable<CustomerDto>>> GetCustomers()
@@ -24,6 +30,10 @@ namespace GroceryStoreAPI.Controllers
             return await _service.GetCustomers();
         }
 
+        /// <summary>
+        /// Get a specific Customer.
+        /// </summary>
+        /// <param name="id"></param>
         // GET: api/Customer/5
         [HttpGet("{id}")]
         public async Task<ActionResult<CustomerDto>> GetCustomer(long id)
@@ -38,6 +48,11 @@ namespace GroceryStoreAPI.Controllers
             return customer;
         }
 
+        /// <summary>
+        /// Update a Customer.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="customerDto"></param>
         // PUT: api/Customer/5
         [HttpPut("{id}")]
         public async Task<IActionResult> PutCustomer(long id, CustomerDto customerDto)
@@ -56,6 +71,10 @@ namespace GroceryStoreAPI.Controllers
             return NoContent();
         }
 
+        /// <summary>
+        /// Create a Customer.
+        /// </summary>
+        /// <param name="customerDto"></param>
         // POST: api/Customer
         [HttpPost]
         public async Task<IActionResult> PostCustomer(CustomerDto customerDto)
@@ -65,6 +84,10 @@ namespace GroceryStoreAPI.Controllers
             return CreatedAtAction("GetCustomer", new { id = customerDto.Id }, customerDto);
         }
 
+        /// <summary>
+        /// Delete a specific Customer.
+        /// </summary>
+        /// <param name="id"></param>
         // DELETE: api/Customer/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCustomer(long id)
