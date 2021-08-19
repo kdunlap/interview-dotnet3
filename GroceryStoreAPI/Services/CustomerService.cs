@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GroceryStoreAPI.Services
 {
+    /// <inheritdoc />
     public class CustomerService : ICustomerService
     {
         private readonly IRepository<Customer> _customerRepository;
@@ -20,6 +21,7 @@ namespace GroceryStoreAPI.Services
             _mapper = mapper;
         }
         
+        /// <inheritdoc />
         public async Task<List<CustomerDto>> GetCustomers()
         {
             var customers = await _customerRepository.GetAll();
@@ -27,6 +29,7 @@ namespace GroceryStoreAPI.Services
             return customers.Select(c => _mapper.Map<CustomerDto>(c)).ToList();
         }
         
+        /// <inheritdoc />
         public async Task<CustomerDto> GetCustomer(long id)
         {
             var customer = await _customerRepository.Get(id);
@@ -38,12 +41,14 @@ namespace GroceryStoreAPI.Services
             return _mapper.Map<CustomerDto>(customer);
         }
         
+        /// <inheritdoc />
         public async Task<CustomerDto> CreateCustomer(CustomerDto customerDto)
         {
             var customer = await _customerRepository.Add(_mapper.Map<Customer>(customerDto));
             return _mapper.Map<CustomerDto>(customer);
         }
-        
+
+        /// <inheritdoc />
         public async Task<CustomerDto> UpdateCustomer(CustomerDto customerDto)
         {
             var customer = await _customerRepository.Update(_mapper.Map<Customer>(customerDto));
@@ -54,16 +59,12 @@ namespace GroceryStoreAPI.Services
             
             return _mapper.Map<CustomerDto>(customer);
         }
-        
-        public async Task<CustomerDto> DeleteCustomer(long id)
+
+        /// <inheritdoc />
+        public async Task<bool> DeleteCustomer(long id)
         {
-            var customer = await _customerRepository.Delete(id);
-            if (customer == null)
-            {
-                return null;
-            }
-            
-            return _mapper.Map<CustomerDto>(customer);
+            Customer customer = await _customerRepository.Delete(id);
+            return (customer != null);
         }
     }
 }

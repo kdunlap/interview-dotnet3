@@ -13,115 +13,102 @@ namespace Tests.Services
 {
     public class CustomerServiceTest
     {
-        private readonly Mock<IRepository<Customer>> _mockRepository = new Mock<IRepository<Customer>>();
-        private readonly IMapper _mapper;
+        private readonly Mock<IRepository<Customer>> _mockRepository = new();
 
-        private readonly List<Customer> _testCustomers = new List<Customer>()
+        private readonly List<Customer> _testCustomers = new()
         {
-            new Customer() {Id = 1, Name = "Test Customer 1"},
-            new Customer() {Id = 2, Name = "Test Customer 2"},
-            new Customer() {Id = 3, Name = "Test Customer 3"}
+            new Customer {Id = 1, Name = "Test Customer 1"},
+            new Customer {Id = 2, Name = "Test Customer 2"},
+            new Customer {Id = 3, Name = "Test Customer 3"}
         };
+
+        private readonly ICustomerService _service; 
 
         public CustomerServiceTest()
         {
-            // todo - should be able to do this once for all tests
             var myProfile = new MappingProfile();
             var configuration = new MapperConfiguration(cfg => cfg.AddProfile(myProfile));
-            _mapper = new Mapper(configuration);
-        }
-        
-        private CustomerService BuildCustomerService()
-        {
-            var service = new CustomerService(_mockRepository.Object, _mapper);
+            IMapper mapper = new Mapper(configuration);
             
-            return service;
+            _service = new CustomerService(_mockRepository.Object, mapper);
         }
         
         [Fact]
-        public async Task GetCustomers_ReturnsAListOfCustomers()
+        public async Task WhenAllIsNormal_GetCustomers_ShouldReturnAListOfCustomers()
         {
             _mockRepository.Setup(r => r.GetAll()).ReturnsAsync(_testCustomers);
-            var service = BuildCustomerService();
-            var result = await service.GetCustomers();
+            var result = await _service.GetCustomers();
 
             Assert.Equal(3, result.Count);
         }
         
         [Fact]
-        public async Task GetCustomer_ReturnsNullIfNotFound()
+        public async Task WhenCustomerDoesNotExist_GetCustomer_ShouldReturnNull()
         {
             _mockRepository.Setup(r => r.Get(99)).ReturnsAsync(null as Customer);
-            var service = BuildCustomerService();
-            var customer = await service.GetCustomer(99);
+            CustomerDto customer = await _service.GetCustomer(99);
             
             Assert.Null(customer);
         }
         
         [Fact]
-        public async Task CreateCustomer_ReturnsAddedCustomer()
+        public async Task WhenAllIsNormal_CreateCustomer_ShouldReturnTheCustomer()
         {
             var customerToAdd = new Customer() {Id = 99, Name = "Test Customer 4"};
             _mockRepository.Setup(r => r.Add(It.IsAny<Customer>())).ReturnsAsync(customerToAdd);
-            var service = BuildCustomerService();
-            var addedCustomer = await service.CreateCustomer(new CustomerDto{Name = "Test Customer 4"});
+            CustomerDto addedCustomer = await _service.CreateCustomer(new CustomerDto{Name = "Test Customer 4"});
             
             Assert.Equal(customerToAdd.Id, addedCustomer.Id);
             Assert.Equal(customerToAdd.Name, addedCustomer.Name);
         }
         
         [Fact]
-        public async Task UpdateCustomer_ReturnsNullIfNotFound()
+        public async Task WhenCustomerDoesNotExist_UpdateCustomer_ShouldReturnNull()
         {
             _mockRepository.Setup(r => r.Update(It.IsAny<Customer>())).ReturnsAsync(null as Customer);
-            var service = BuildCustomerService();
             var customerToUpdate = new CustomerDto
             {
                 Id = 999,
                 Name = "Test Customer Not Found"
             };
 
-            var updated = await service.UpdateCustomer(customerToUpdate);
+            CustomerDto updated = await _service.UpdateCustomer(customerToUpdate);
             Assert.Null(updated);
         }
         
         [Fact]
-        public async Task UpdateCustomer_UpdatesCustomer()
+        public async Task WhenAllIsNormal_UpdateCustomer_ShouldReturnTheUpdatedCustomer()
         {
             _mockRepository.Setup(r => r.Update(It.IsAny<Customer>())).ReturnsAsync(new Customer(){Id=1, Name="Customer 1 Renamed"});
-            var service = BuildCustomerService();
             var customerToUpdate = new CustomerDto
             {
                 Id = 1,
                 Name = "Customer 1 Renamed"
             };
 
-            var updated = await service.UpdateCustomer(customerToUpdate);
+            CustomerDto updated = await _service.UpdateCustomer(customerToUpdate);
             
             Assert.Equal(customerToUpdate.Id, updated.Id);
             Assert.Equal(customerToUpdate.Name, updated.Name);
         }
         
         [Fact]
-        public async Task DeleteCustomer_ReturnsNullIfNotFound()
+        public async Task WhenCustomerDoesNotExist_DeleteCustomer_ShouldReturnsFalse()
         {
             _mockRepository.Setup(r => r.Delete(999)).ReturnsAsync(null as Customer);
-            var service = BuildCustomerService();
-            var deleted = await service.DeleteCustomer(999);
+            var result = await _service.DeleteCustomer(999);
             
-            Assert.Null(deleted);
+            Assert.False(result);
         }
         
         [Fact]
-        public async Task DeleteCustomer_ReturnsDeletedCustomer()
+        public async Task WhenAllIsNormal_DeleteCustomer_ShouldReturnTrue()
         {
             var customerToDelete = new Customer() {Id = 1, Name = "Customer 1"};
             _mockRepository.Setup(r => r.Delete(1)).ReturnsAsync(customerToDelete);
-            var service = BuildCustomerService();
-            var deletedCustomer = await service.DeleteCustomer(1);
+            var result = await _service.DeleteCustomer(1);
 
-            Assert.Equal(customerToDelete.Id, deletedCustomer.Id);
-            Assert.Equal(customerToDelete.Name, deletedCustomer.Name);
+            Assert.True(result);
         }
     }
 }

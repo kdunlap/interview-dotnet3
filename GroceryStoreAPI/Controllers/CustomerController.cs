@@ -38,7 +38,7 @@ namespace GroceryStoreAPI.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<CustomerDto>> GetCustomer(long id)
         {
-            var customer = await _service.GetCustomer(id);
+            CustomerDto customer = await _service.GetCustomer(id);
 
             if (customer == null)
             {
@@ -62,7 +62,7 @@ namespace GroceryStoreAPI.Controllers
                 return BadRequest();
             }
 
-            var result = await _service.UpdateCustomer(customerDto);
+            CustomerDto result = await _service.UpdateCustomer(customerDto);
             if (result == null)
             {
                 return NotFound();
@@ -93,7 +93,7 @@ namespace GroceryStoreAPI.Controllers
         public async Task<IActionResult> DeleteCustomer(long id)
         {
             var customer = await _service.DeleteCustomer(id);
-            if (customer == null)
+            if (!customer)
             {
                 return NotFound();
             }
