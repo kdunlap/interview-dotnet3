@@ -1,10 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using GroceryStoreAPI.Controllers;
 using GroceryStoreAPI.Dto;
 using GroceryStoreAPI.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.VisualBasic;
 using Moq;
 using Xunit;
 
@@ -67,23 +69,13 @@ namespace Tests.Controllers
         }
         
         [Fact]
-        public async Task WhenParametersAreInvalid_PutCustomer_ShouldReturnBadRequest()
-        {
-            var sampleCustomer = new CustomerDto() {Id = 2, Name = "Test Customer 1"};
-
-            IActionResult response = await _customerController.PutCustomer(1, sampleCustomer);
-            
-            Assert.IsType<BadRequestResult>(response);
-        }
-        
-        [Fact]
         public async Task WhenCustomerDoesNotExist_PutCustomer_ShouldReturn404()
         {
             _mockCustomerService.Setup(x => x.UpdateCustomer(It.IsAny<CustomerDto>()))
                 .Returns(Task.FromResult<CustomerDto>(null));
             var sampleCustomer = new CustomerDto() {Id = 1, Name = "Test Customer 1"};
 
-            IActionResult response = await _customerController.PutCustomer(1, sampleCustomer);
+            IActionResult response = await _customerController.PutCustomer(sampleCustomer);
             
             Assert.IsType<NotFoundResult>(response);
         }
@@ -91,9 +83,10 @@ namespace Tests.Controllers
         [Fact]
         public async Task WhenAllIsNormal_CreateCustomer_ShouldReturnACreatedAtActionResult()
         {
-            var sampleCustomer = new CustomerDto() {Id = 1, Name = "Test Customer 1"};
-            _mockCustomerService.Setup(x => x.CreateCustomer(It.IsAny<CustomerDto>()))
-                .Returns(Task.FromResult(sampleCustomer));
+            var sampleCustomer = new CustomerCreateDto() {Name = "Test Customer 1"};
+            var sampleResponse = new CustomerDto() {Id = 1, Name = "Test Customer 1"};
+            _mockCustomerService.Setup(x => x.CreateCustomer(It.IsAny<CustomerCreateDto>()))
+                .Returns(Task.FromResult(sampleResponse));
 
             IActionResult response = await _customerController.PostCustomer(sampleCustomer);
             

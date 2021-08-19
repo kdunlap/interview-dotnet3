@@ -51,17 +51,11 @@ namespace GroceryStoreAPI.Controllers
         /// <summary>
         /// Update a Customer.
         /// </summary>
-        /// <param name="id"></param>
         /// <param name="customerDto"></param>
         // PUT: api/Customer/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutCustomer(long id, CustomerDto customerDto)
+        public async Task<IActionResult> PutCustomer(CustomerDto customerDto)
         {
-            if (id != customerDto.Id)
-            {
-                return BadRequest();
-            }
-
             CustomerDto result = await _service.UpdateCustomer(customerDto);
             if (result == null)
             {
@@ -77,11 +71,11 @@ namespace GroceryStoreAPI.Controllers
         /// <param name="customerDto"></param>
         // POST: api/Customer
         [HttpPost]
-        public async Task<IActionResult> PostCustomer(CustomerDto customerDto)
+        public async Task<IActionResult> PostCustomer(CustomerCreateDto customerDto)
         {
-            customerDto = await _service.CreateCustomer(customerDto);
+            CustomerDto newCustomer = await _service.CreateCustomer(customerDto);
 
-            return CreatedAtAction("GetCustomer", new { id = customerDto.Id }, customerDto);
+            return CreatedAtAction("GetCustomer", new { id = newCustomer.Id }, customerDto);
         }
 
         /// <summary>

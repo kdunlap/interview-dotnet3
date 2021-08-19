@@ -42,7 +42,7 @@ namespace GroceryStoreAPI.Services
         }
         
         /// <inheritdoc />
-        public async Task<CustomerDto> CreateCustomer(CustomerDto customerDto)
+        public async Task<CustomerDto> CreateCustomer(CustomerCreateDto customerDto)
         {
             var customer = await _customerRepository.Add(_mapper.Map<Customer>(customerDto));
             return _mapper.Map<CustomerDto>(customer);

@@ -9,6 +9,7 @@ namespace GroceryStoreAPI.Data
         public MappingProfile()
         {
             CreateMap<Customer, CustomerDto>().ReverseMap();
+            CreateMap<Customer, CustomerCreateDto>().ReverseMap();
         }
     }
 }

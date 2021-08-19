@@ -26,8 +26,8 @@ namespace Tests.Services
 
         public CustomerServiceTest()
         {
-            var myProfile = new MappingProfile();
-            var configuration = new MapperConfiguration(cfg => cfg.AddProfile(myProfile));
+            var profile = new MappingProfile();
+            var configuration = new MapperConfiguration(cfg => cfg.AddProfile(profile));
             IMapper mapper = new Mapper(configuration);
             
             _service = new CustomerService(_mockRepository.Object, mapper);
@@ -56,7 +56,7 @@ namespace Tests.Services
         {
             var customerToAdd = new Customer() {Id = 99, Name = "Test Customer 4"};
             _mockRepository.Setup(r => r.Add(It.IsAny<Customer>())).ReturnsAsync(customerToAdd);
-            CustomerDto addedCustomer = await _service.CreateCustomer(new CustomerDto{Name = "Test Customer 4"});
+            CustomerDto addedCustomer = await _service.CreateCustomer(new CustomerCreateDto{Name = "Test Customer 4"});
             
             Assert.Equal(customerToAdd.Id, addedCustomer.Id);
             Assert.Equal(customerToAdd.Name, addedCustomer.Name);

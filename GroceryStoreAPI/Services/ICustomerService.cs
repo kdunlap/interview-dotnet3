@@ -23,7 +23,7 @@ namespace GroceryStoreAPI.Services
         /// <summary>
         /// Create a new customer
         /// </summary>
-        Task<CustomerDto> CreateCustomer(CustomerDto customer);
+        Task<CustomerDto> CreateCustomer(CustomerCreateDto customer);
         
         /// <summary>
         /// Update a single customer
