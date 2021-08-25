@@ -4,6 +4,7 @@ using AutoMapper;
 using GroceryStoreAPI.Data;
 using GroceryStoreAPI.Data.Repositories;
 using GroceryStoreAPI.Dto;
+using GroceryStoreAPI.Entities.Response;
 using GroceryStoreAPI.Models;
 using GroceryStoreAPI.Services;
 using Moq;
@@ -46,9 +47,9 @@ namespace Tests.Services
         public async Task WhenCustomerDoesNotExist_GetCustomer_ShouldReturnNull()
         {
             _mockRepository.Setup(r => r.Get(99)).ReturnsAsync(null as Customer);
-            CustomerDto customer = await _service.GetCustomer(99);
+            CustomerResponse customerUpdate = await _service.GetCustomer(99);
             
-            Assert.Null(customer);
+            Assert.Null(customerUpdate);
         }
         
         [Fact]
@@ -56,23 +57,23 @@ namespace Tests.Services
         {
             var customerToAdd = new Customer() {Id = 99, Name = "Test Customer 4"};
             _mockRepository.Setup(r => r.Add(It.IsAny<Customer>())).ReturnsAsync(customerToAdd);
-            CustomerDto addedCustomer = await _service.CreateCustomer(new CustomerCreateDto{Name = "Test Customer 4"});
+            CustomerResponse addedCustomerUpdate = await _service.CreateCustomer(new CustomerCreateRequest{Name = "Test Customer 4"});
             
-            Assert.Equal(customerToAdd.Id, addedCustomer.Id);
-            Assert.Equal(customerToAdd.Name, addedCustomer.Name);
+            Assert.Equal(customerToAdd.Id, addedCustomerUpdate.Id);
+            Assert.Equal(customerToAdd.Name, addedCustomerUpdate.Name);
         }
         
         [Fact]
         public async Task WhenCustomerDoesNotExist_UpdateCustomer_ShouldReturnNull()
         {
             _mockRepository.Setup(r => r.Update(It.IsAny<Customer>())).ReturnsAsync(null as Customer);
-            var customerToUpdate = new CustomerDto
+            var customerToUpdate = new CustomerUpdateRequest
             {
                 Id = 999,
                 Name = "Test Customer Not Found"
             };
 
-            CustomerDto updated = await _service.UpdateCustomer(customerToUpdate);
+            CustomerResponse updated = await _service.UpdateCustomer(customerToUpdate);
             Assert.Null(updated);
         }
         
@@ -80,13 +81,13 @@ namespace Tests.Services
         public async Task WhenAllIsNormal_UpdateCustomer_ShouldReturnTheUpdatedCustomer()
         {
             _mockRepository.Setup(r => r.Update(It.IsAny<Customer>())).ReturnsAsync(new Customer(){Id=1, Name="Customer 1 Renamed"});
-            var customerToUpdate = new CustomerDto
+            var customerToUpdate = new CustomerUpdateRequest
             {
                 Id = 1,
                 Name = "Customer 1 Renamed"
             };
 
-            CustomerDto updated = await _service.UpdateCustomer(customerToUpdate);
+            CustomerResponse updated = await _service.UpdateCustomer(customerToUpdate);
             
             Assert.Equal(customerToUpdate.Id, updated.Id);
             Assert.Equal(customerToUpdate.Name, updated.Name);

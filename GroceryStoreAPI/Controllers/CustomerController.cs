@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using GroceryStoreAPI.Dto;
+using GroceryStoreAPI.Entities.Response;
 using Microsoft.AspNetCore.Mvc;
 using GroceryStoreAPI.Services;
 
@@ -25,7 +26,7 @@ namespace GroceryStoreAPI.Controllers
         /// </summary>
         // GET: api/Customer
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<CustomerDto>>> GetCustomers()
+        public async Task<ActionResult<IEnumerable<CustomerResponse>>> GetCustomers()
         {
             return await _service.GetCustomers();
         }
@@ -36,46 +37,46 @@ namespace GroceryStoreAPI.Controllers
         /// <param name="id"></param>
         // GET: api/Customer/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<CustomerDto>> GetCustomer(long id)
+        public async Task<ActionResult<CustomerResponse>> GetCustomer(long id)
         {
-            CustomerDto customer = await _service.GetCustomer(id);
+            CustomerResponse customerUpdate = await _service.GetCustomer(id);
 
-            if (customer == null)
+            if (customerUpdate == null)
             {
                 return NotFound();
             }
 
-            return customer;
+            return customerUpdate;
         }
 
         /// <summary>
         /// Update a Customer.
         /// </summary>
-        /// <param name="customerDto"></param>
+        /// <param name="customerUpdateRequest"></param>
         // PUT: api/Customer/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutCustomer(CustomerDto customerDto)
+        public async Task<ActionResult<CustomerResponse>> PutCustomer(CustomerUpdateRequest customerUpdateRequest)
         {
-            CustomerDto result = await _service.UpdateCustomer(customerDto);
+            CustomerResponse result = await _service.UpdateCustomer(customerUpdateRequest);
             if (result == null)
             {
                 return NotFound();
             }
             
-            return NoContent();
+            return result;
         }
 
         /// <summary>
         /// Create a Customer.
         /// </summary>
-        /// <param name="customerDto"></param>
+        /// <param name="customerRequest"></param>
         // POST: api/Customer
         [HttpPost]
-        public async Task<IActionResult> PostCustomer(CustomerCreateDto customerDto)
+        public async Task<ActionResult<CustomerResponse>> PostCustomer(CustomerCreateRequest customerRequest)
         {
-            CustomerDto newCustomer = await _service.CreateCustomer(customerDto);
+            CustomerResponse newCustomerUpdate = await _service.CreateCustomer(customerRequest);
 
-            return CreatedAtAction("GetCustomer", new { id = newCustomer.Id }, customerDto);
+            return CreatedAtAction("GetCustomer", new { id = newCustomerUpdate.Id }, customerRequest);
         }
 
         /// <summary>

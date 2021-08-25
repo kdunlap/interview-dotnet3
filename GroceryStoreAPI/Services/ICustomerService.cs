@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using GroceryStoreAPI.Dto;
+using GroceryStoreAPI.Entities.Response;
 using GroceryStoreAPI.Models;
 
 namespace GroceryStoreAPI.Services
@@ -13,22 +14,22 @@ namespace GroceryStoreAPI.Services
         /// <summary>
         /// Gets a list of customers
         /// </summary>
-        Task<List<CustomerDto>> GetCustomers();
+        Task<List<CustomerResponse>> GetCustomers();
         
         /// <summary>
         /// Get a single customer
         /// </summary>
-        Task<CustomerDto> GetCustomer(long id);
+        Task<CustomerResponse> GetCustomer(long id);
         
         /// <summary>
         /// Create a new customer
         /// </summary>
-        Task<CustomerDto> CreateCustomer(CustomerCreateDto customer);
+        Task<CustomerResponse> CreateCustomer(CustomerCreateRequest customer);
         
         /// <summary>
         /// Update a single customer
         /// </summary>
-        Task<CustomerDto> UpdateCustomer(CustomerDto customer);
+        Task<CustomerResponse> UpdateCustomer(CustomerUpdateRequest customerUpdate);
         
         /// <summary>
         /// Delete a single customer

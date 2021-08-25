@@ -10,5 +10,11 @@ namespace GroceryStoreAPI.Models
         }
 
         public DbSet<Customer> Customers { get; set; }
+        
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Customer>()
+                .HasKey(c => c.Id);
+        }
     }
 }
