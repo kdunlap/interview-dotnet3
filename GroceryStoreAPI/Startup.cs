@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Reflection;
+using GroceryStoreAPI.Data.Models;
 using GroceryStoreAPI.Data.Repositories;
 using GroceryStoreAPI.Models;
 using GroceryStoreAPI.Services;

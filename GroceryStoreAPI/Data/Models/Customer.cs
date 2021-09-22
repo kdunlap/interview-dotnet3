@@ -1,6 +1,4 @@
-﻿using GroceryStoreAPI.Data;
-
-namespace GroceryStoreAPI.Models
+﻿namespace GroceryStoreAPI.Data.Models
 {
     public class Customer : IEntity
     {

@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace GroceryStoreAPI.Dto
+namespace GroceryStoreAPI.Requests
 {
     public class CustomerUpdateRequest
     {

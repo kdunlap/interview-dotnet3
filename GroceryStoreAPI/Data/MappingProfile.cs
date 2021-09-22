@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
+using GroceryStoreAPI.Data.Models;
 using GroceryStoreAPI.Dto;
-using GroceryStoreAPI.Entities.Response;
-using GroceryStoreAPI.Models;
+using GroceryStoreAPI.Requests;
 
 namespace GroceryStoreAPI.Data
 {
@@ -9,7 +9,7 @@ namespace GroceryStoreAPI.Data
     {
         public MappingProfile()
         {
-            CreateMap<Customer, CustomerResponse>().ReverseMap();
+            CreateMap<Customer, CustomerDto>().ReverseMap();
             CreateMap<CustomerCreateRequest, Customer>();
             CreateMap<CustomerUpdateRequest, Customer>();
         }

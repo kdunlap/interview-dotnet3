@@ -1,4 +1,5 @@
 ﻿using GroceryStoreAPI.Data.EFCore;
+using GroceryStoreAPI.Data.Models;
 using GroceryStoreAPI.Models;
 
 namespace GroceryStoreAPI.Data.Repositories

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using GroceryStoreAPI.Data.Models;
 using GroceryStoreAPI.Models;
 using Newtonsoft.Json;
 

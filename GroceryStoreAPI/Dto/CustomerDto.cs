@@ -1,6 +1,6 @@
-namespace GroceryStoreAPI.Entities.Response
+namespace GroceryStoreAPI.Dto
 {
-    public class CustomerResponse
+    public class CustomerDto
     {
         public long Id { get; set; }
         

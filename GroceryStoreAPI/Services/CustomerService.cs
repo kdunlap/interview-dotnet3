@@ -2,11 +2,10 @@
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using GroceryStoreAPI.Data.Models;
 using GroceryStoreAPI.Data.Repositories;
 using GroceryStoreAPI.Dto;
-using GroceryStoreAPI.Entities.Response;
-using GroceryStoreAPI.Models;
-using Microsoft.EntityFrameworkCore;
+using GroceryStoreAPI.Requests;
 
 namespace GroceryStoreAPI.Services
 {
@@ -16,6 +15,11 @@ namespace GroceryStoreAPI.Services
         private readonly IRepository<Customer> _customerRepository;
         private readonly IMapper _mapper;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="customerRepository"></param>
+        /// <param name="mapper"></param>
         public CustomerService(IRepository<Customer> customerRepository, IMapper mapper)
         {
             _customerRepository = customerRepository;
@@ -23,48 +27,48 @@ namespace GroceryStoreAPI.Services
         }
         
         /// <inheritdoc />
-        public async Task<List<CustomerResponse>> GetCustomers()
+        public async Task<List<CustomerDto>> GetCustomers()
         {
-            var customers = await _customerRepository.GetAll();
+            var customers = await _customerRepository.GetAllAsync();
 
-            return customers.Select(c => _mapper.Map<CustomerResponse>(c)).ToList();
+            return customers.Select(c => _mapper.Map<CustomerDto>(c)).ToList();
         }
         
         /// <inheritdoc />
-        public async Task<CustomerResponse> GetCustomer(long id)
+        public async Task<CustomerDto> GetCustomer(long id)
         {
-            var customer = await _customerRepository.Get(id);
+            Customer customer = await _customerRepository.GetAsync(id);
             if (customer == null)
             {
                 return null;
             }
             
-            return _mapper.Map<CustomerResponse>(customer);
+            return _mapper.Map<CustomerDto>(customer);
         }
         
         /// <inheritdoc />
-        public async Task<CustomerResponse> CreateCustomer(CustomerCreateRequest customerRequest)
+        public async Task<CustomerDto> CreateCustomer(CustomerCreateRequest customerRequest)
         {
-            var customer = await _customerRepository.Add(_mapper.Map<Customer>(customerRequest));
-            return _mapper.Map<CustomerResponse>(customer);
+            Customer customer = await _customerRepository.AddAsync(_mapper.Map<Customer>(customerRequest));
+            return _mapper.Map<CustomerDto>(customer);
         }
 
         /// <inheritdoc />
-        public async Task<CustomerResponse> UpdateCustomer(CustomerUpdateRequest customerUpdateRequest)
+        public async Task<CustomerDto> UpdateCustomer(CustomerUpdateRequest customerUpdateRequest)
         {
-            var customer = await _customerRepository.Update(_mapper.Map<Customer>(customerUpdateRequest));
+            Customer customer = await _customerRepository.UpdateAsync(_mapper.Map<Customer>(customerUpdateRequest));
             if (customer == null)
             {
                 return null;
             }
             
-            return _mapper.Map<CustomerResponse>(customer);
+            return _mapper.Map<CustomerDto>(customer);
         }
 
         /// <inheritdoc />
         public async Task<bool> DeleteCustomer(long id)
         {
-            Customer customer = await _customerRepository.Delete(id);
+            Customer customer = await _customerRepository.DeleteAsync(id);
             return (customer != null);
         }
     }

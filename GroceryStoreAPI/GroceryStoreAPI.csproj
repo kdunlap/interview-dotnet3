@@ -6,6 +6,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Folder Include="Controllers" />
+    <Folder Include="Filters" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="10.1.1" />

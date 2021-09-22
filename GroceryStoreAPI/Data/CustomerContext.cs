@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using GroceryStoreAPI.Data.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace GroceryStoreAPI.Models
 {

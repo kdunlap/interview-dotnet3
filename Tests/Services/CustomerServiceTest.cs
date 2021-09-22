@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using GroceryStoreAPI.Data;
+using GroceryStoreAPI.Data.Models;
 using GroceryStoreAPI.Data.Repositories;
+using GroceryStoreAPI.Requests;
 using GroceryStoreAPI.Dto;
-using GroceryStoreAPI.Entities.Response;
-using GroceryStoreAPI.Models;
 using GroceryStoreAPI.Services;
 using Moq;
 using Xunit;
@@ -37,7 +38,7 @@ namespace Tests.Services
         [Fact]
         public async Task WhenAllIsNormal_GetCustomers_ShouldReturnAListOfCustomers()
         {
-            _mockRepository.Setup(r => r.GetAll()).ReturnsAsync(_testCustomers);
+            _mockRepository.Setup(r => r.GetAllAsync()).ReturnsAsync(_testCustomers.AsQueryable());
             var result = await _service.GetCustomers();
 
             Assert.Equal(3, result.Count);
@@ -46,8 +47,8 @@ namespace Tests.Services
         [Fact]
         public async Task WhenCustomerDoesNotExist_GetCustomer_ShouldReturnNull()
         {
-            _mockRepository.Setup(r => r.Get(99)).ReturnsAsync(null as Customer);
-            CustomerResponse customerUpdate = await _service.GetCustomer(99);
+            _mockRepository.Setup(r => r.GetAsync(99)).ReturnsAsync(null as Customer);
+            CustomerDto customerUpdate = await _service.GetCustomer(99);
             
             Assert.Null(customerUpdate);
         }
@@ -56,8 +57,8 @@ namespace Tests.Services
         public async Task WhenAllIsNormal_CreateCustomer_ShouldReturnTheCustomer()
         {
             var customerToAdd = new Customer() {Id = 99, Name = "Test Customer 4"};
-            _mockRepository.Setup(r => r.Add(It.IsAny<Customer>())).ReturnsAsync(customerToAdd);
-            CustomerResponse addedCustomerUpdate = await _service.CreateCustomer(new CustomerCreateRequest{Name = "Test Customer 4"});
+            _mockRepository.Setup(r => r.AddAsync(It.IsAny<Customer>())).ReturnsAsync(customerToAdd);
+            CustomerDto addedCustomerUpdate = await _service.CreateCustomer(new CustomerCreateRequest{Name = "Test Customer 4"});
             
             Assert.Equal(customerToAdd.Id, addedCustomerUpdate.Id);
             Assert.Equal(customerToAdd.Name, addedCustomerUpdate.Name);
@@ -66,28 +67,28 @@ namespace Tests.Services
         [Fact]
         public async Task WhenCustomerDoesNotExist_UpdateCustomer_ShouldReturnNull()
         {
-            _mockRepository.Setup(r => r.Update(It.IsAny<Customer>())).ReturnsAsync(null as Customer);
+            _mockRepository.Setup(r => r.UpdateAsync(It.IsAny<Customer>())).ReturnsAsync(null as Customer);
             var customerToUpdate = new CustomerUpdateRequest
             {
                 Id = 999,
                 Name = "Test Customer Not Found"
             };
 
-            CustomerResponse updated = await _service.UpdateCustomer(customerToUpdate);
+            CustomerDto updated = await _service.UpdateCustomer(customerToUpdate);
             Assert.Null(updated);
         }
         
         [Fact]
         public async Task WhenAllIsNormal_UpdateCustomer_ShouldReturnTheUpdatedCustomer()
         {
-            _mockRepository.Setup(r => r.Update(It.IsAny<Customer>())).ReturnsAsync(new Customer(){Id=1, Name="Customer 1 Renamed"});
+            _mockRepository.Setup(r => r.UpdateAsync(It.IsAny<Customer>())).ReturnsAsync(new Customer(){Id=1, Name="Customer 1 Renamed"});
             var customerToUpdate = new CustomerUpdateRequest
             {
                 Id = 1,
                 Name = "Customer 1 Renamed"
             };
 
-            CustomerResponse updated = await _service.UpdateCustomer(customerToUpdate);
+            CustomerDto updated = await _service.UpdateCustomer(customerToUpdate);
             
             Assert.Equal(customerToUpdate.Id, updated.Id);
             Assert.Equal(customerToUpdate.Name, updated.Name);
@@ -96,7 +97,7 @@ namespace Tests.Services
         [Fact]
         public async Task WhenCustomerDoesNotExist_DeleteCustomer_ShouldReturnsFalse()
         {
-            _mockRepository.Setup(r => r.Delete(999)).ReturnsAsync(null as Customer);
+            _mockRepository.Setup(r => r.DeleteAsync(999)).ReturnsAsync(null as Customer);
             var result = await _service.DeleteCustomer(999);
             
             Assert.False(result);
@@ -106,7 +107,7 @@ namespace Tests.Services
         public async Task WhenAllIsNormal_DeleteCustomer_ShouldReturnTrue()
         {
             var customerToDelete = new Customer() {Id = 1, Name = "Customer 1"};
-            _mockRepository.Setup(r => r.Delete(1)).ReturnsAsync(customerToDelete);
+            _mockRepository.Setup(r => r.DeleteAsync(1)).ReturnsAsync(customerToDelete);
             var result = await _service.DeleteCustomer(1);
 
             Assert.True(result);
