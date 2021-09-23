@@ -46,8 +46,6 @@ namespace GroceryStoreAPI.Controllers
         {
             CustomerDto customerUpdate = await _service.GetCustomer(id);
             
-            // todo - 404 here
-            
             return customerUpdate;
         }
 

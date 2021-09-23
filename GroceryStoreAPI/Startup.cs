@@ -1,12 +1,15 @@
 ﻿using System;
 using System.IO;
+using System.Net.Mime;
 using System.Reflection;
 using GroceryStoreAPI.Data.Models;
 using GroceryStoreAPI.Data.Repositories;
+using GroceryStoreAPI.Middleware;
 using GroceryStoreAPI.Models;
 using GroceryStoreAPI.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -29,8 +32,9 @@ namespace GroceryStoreAPI
         {
             services.AddDbContext<CustomerContext>(opt =>
                 opt.UseInMemoryDatabase("Customer"));
-            
+
             services.AddControllers();
+            
             services.AddScoped<ICustomerService, CustomerService>();
 
             services.AddScoped<IRepository<Customer>, CustomerRepository>();
@@ -75,6 +79,8 @@ namespace GroceryStoreAPI
 
             app.UseAuthorization();
 
+            app.UseMiddleware<ExceptionMiddleware>();
+            
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();

@@ -38,11 +38,6 @@ namespace GroceryStoreAPI.Services
         public async Task<CustomerDto> GetCustomer(long id)
         {
             Customer customer = await _customerRepository.GetAsync(id);
-            if (customer == null)
-            {
-                return null;
-            }
-            
             return _mapper.Map<CustomerDto>(customer);
         }
         
@@ -57,11 +52,6 @@ namespace GroceryStoreAPI.Services
         public async Task<CustomerDto> UpdateCustomer(CustomerUpdateRequest customerUpdateRequest)
         {
             Customer customer = await _customerRepository.UpdateAsync(_mapper.Map<Customer>(customerUpdateRequest));
-            if (customer == null)
-            {
-                return null;
-            }
-            
             return _mapper.Map<CustomerDto>(customer);
         }
 
